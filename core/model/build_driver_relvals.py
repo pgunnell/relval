@@ -48,13 +48,13 @@ def driver_DIGI(campaign_ticket):
     driver_forPU='to_be_defined'
 
     if(campaign_ticket['pile_up']=='premix'):
-        driver_forPU='--procModifiers premix_stage2 --datamix PreMix --pileup_input das:'
+        driver_forPU='--procModifiers premix_stage2 --datamix PreMix --pileup_input das:/RelValPREMIXUP15_PU25/'+str(campaign_ticket['string_for_inputGS'])'/PREMIX'
 
     elif(campaign_ticket['pile_up']=='NoPileUp'):
         driver_forPU='--pileup NoPileUp'
 
-    if(campaign_ticket['pile_up']=='premix'):
-        driver_forPU='--pileup '+str(driver_arguments['pile_up_scenario'])+' --pileup_input das:'
+    if(campaign_ticket['pile_up']=='classical_mixing'):
+        driver_forPU='--pileup '+str(driver_arguments['pile_up_scenario'])+' --pileup_input das:/RelVal'+str(i)+'/'+str(campaign_ticket['string_for_inputGS'])'/GEN-SIM'
 
     driver=[]
 
@@ -63,7 +63,7 @@ def driver_DIGI(campaign_ticket):
         GEN_samples = define_samples(campaign_ticket['sample_tag'])
 
         for i in GEN_samples:
-            driver.append('cmsDriver step2 --conditions '+str(driver_arguments['conditions'])+' --era '+str(driver_arguments['era'])+' --geometry '+str(driver_arguments['geometry'])+' --eventcontent FEVTDEBUGHLT -s DIGI:pdigi_valid,DATAMIX,L1,DIGI2RAW,HLT:'+str(driver_arguments['HLT'])+' --datatier GEN-SIM-DIGI-RAW-HLTDEBUG --fileout file:step2.root --nThreads 8 --filein dbs:/'+str(i)+'/GEN-SIM '+str(driver_forPU))
+            driver.append('cmsDriver step2 --conditions '+str(driver_arguments['conditions'])+' --era '+str(driver_arguments['era'])+' --geometry '+str(driver_arguments['geometry'])+' --eventcontent FEVTDEBUGHLT -s DIGI:pdigi_valid,DATAMIX,L1,DIGI2RAW,HLT:'+str(driver_arguments['HLT'])+' --datatier GEN-SIM-DIGI-RAW-HLTDEBUG --fileout file:step2.root --nThreads 8 --filein dbs:/RelVal'+str(i)+'/'+str(campaign_ticket['string_for_inputGS'])'/GEN-SIM '+str(driver_forPU))
 
     elif:
 
