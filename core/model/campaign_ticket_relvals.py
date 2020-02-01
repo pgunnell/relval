@@ -35,6 +35,8 @@ class CampaignTicket(ModelBase):
         'pile_up':'',
         #high_statistics production (True or False)
         'high_statistics': False,
+        #string for GS input
+        'string_for_inputGS':''
         #GEN-SIM samples to be re-used?
         'ReUseGenSim': False,
         #extension number (just a number, if a similar sample was already submitted, observed especially in Phase II)
@@ -45,6 +47,7 @@ class CampaignTicket(ModelBase):
 
     _lambda_checks = {
         'prepid': lambda prepid: ModelBase.matches_regex(prepid, '[a-zA-Z0-9_\\-]{1,50}'),
+        'conditions_globaltag': lambda gt: ModelBase.matches_regex(gt, '[a-zA-Z0-9_\\-]{1,50}'),
         'cmssw_release': lambda cmssw_release: ModelBase.matches_regex(cmssw_release, '[a-zA-Z0-9_\\-]{1,50}'),
         'processing_string': lambda ps: ModelBase.matches_regex(ps, '[a-zA-Z0-9_]{0,100}'),
         'status': lambda status: status in ('new', 'done'),
@@ -53,6 +56,7 @@ class CampaignTicket(ModelBase):
         'high_statistics': lambda high_statistics: isinstance(high_statistics,bool),
         'ReUseGenSim': lambda ReUseGenSim: isinstance(ReUseGenSim,bool),
         'extension_number': lambda extension_number: isinstance(extension_number,int),
+        'string_for_inputGS': lambda string_for_inputGS: ModelBase.matches_regex(string_for_inputGS, '[a-zA-Z0-9_\\-]{1,50}')
     }
 
     def __init__(self, json_input=None):
