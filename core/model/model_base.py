@@ -110,7 +110,7 @@ class ModelBase():
     @classmethod
     def matches_regex(cls, value, regex):
         matcher = re.compile(regex)
-        match = matcher.fullmatch(value)
+        match = matcher.match(value)
         if match:
             return True
 

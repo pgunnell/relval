@@ -1,5 +1,6 @@
 from build_driver_relvals import *
 from create_dict_relvals import *
+from chained_request_relval import *
 
 print(define_samples('Phase2'))
 
@@ -17,14 +18,87 @@ campaign_ticket_json = {
 }
 
 print(driver_GENSIM(campaign_ticket_json))
+driver_GENSIM = driver_GENSIM(campaign_ticket_json)
 print('****')
 print(driver_DIGI(campaign_ticket_json))
+driver_DIGI = driver_DIGI(campaign_ticket_json)
 print('****')
 print(driver_RECO(campaign_ticket_json))
+driver_RECO = driver_RECO(campaign_ticket_json)
 print('****')
 print(driver_NANO(campaign_ticket_json))
+driver_NANO = driver_NANO(campaign_ticket_json)
 
 print('****')
+
+#Try to save the json of the requests
+from save_json import *
+
+GEN_samples = define_samples(campaign_ticket_json['sample_tag'])
+
+for i in range(0,len(GEN_samples)):
+    save_json(campaign_ticket_json,driver_GENSIM[i],'GENSIM',GEN_samples[i])
+
+
+#one can now create a chain with all json files which start from the same name
+chain_requests = []
+
+counter_1 = 0
+for i in GEN_samples:
+    counter_1+=1
+    #these would be requests and not just strings, at the end
+    chain_requests.append(i+str(counter_1))
+
+json_chained_request={'prepid':'ReReco-Run2018A-Charmonium-00001','chain':chain_requests,'notes':'test'}
+
+chained_request_creation = ChainedRequest(json_chained_request)
+
+print(chained_request_creation)
+
+#try to create a html which shows the chained request
+data_json = {}
+with open('ZEE_14TeV_TuneCUETP8M1_cfi_GENSIM.json') as json_file:
+    data_json = json.load(json_file)
+    
+print(data_json)
+
+filename='intropage.html'
+
+f = open(filename,"w+")
+
+f.write('<!DOCTYPE html>')
+f.write('<html lang="en">')
+#  <head>
+#    <base href="/rereco/">
+#    <meta charset="utf-8">
+#    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+#    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+#    <link rel="icon" href="static/favicon.png">
+#    <title>ReReco</title>
+##    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+#    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+#  </head>
+f.write('<body>\n')
+f.write('<table style="width:80%">\n')
+f.write('<tr>\n')
+f.write('<th>Datatier</th>\n')
+f.write('<th>CMSSW_release</th>\n')
+f.write('<th>Driver</th>\n')
+f.write('</tr>\n')
+f.write('<tr>\n')
+f.write('<td>%s</td>\n' %data_json['datatier'])
+f.write('<td>%s</td>\n' %data_json['cmssw_release'])
+f.write('<td>%s</td>\n' %data_json['driver'])
+f.write('</tr>\n')
+f.write('</table>\n')
+f.write('</body>\n')
+f.write('</html>\n')
+
+f.close()
+
+
+
+#another exercise
 
 campaign_json = { 
     'conditions' : 'minz',

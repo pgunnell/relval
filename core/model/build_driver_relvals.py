@@ -82,10 +82,16 @@ def driver_RECO(campaign_ticket):
 
     driver_forPU=''
 
+    driver = []
+
     if(campaign_ticket['pile_up']=='premix'):
         driver_forPU='--procModifiers premix_stage2'
 
-    driver='cmsDriver step3 --conditions '+str(driver_arguments['conditions'])+' --era '+str(driver_arguments['era'])+' --geometry '+str(driver_arguments['geometry'])+' --eventcontent RECOSIM,MINIAODSIM,DQM -s RAW2DIGI,L1Reco,RECO,RECOSIM,EI,PAT,VALIDATION:@standardValidation+@miniAODValidation,DQM:@standardDQM+@ExtraHLT+@miniAODDQM --python_name step3_RECO_MINIAOD_cfg.py --datatier GEN-SIM-RECO,MINIAODSIM,DQMIO --nThreads 8 --filein file:step2.root --fileout file:step3.root '+str(driver_forPU)
+    GEN_samples = define_samples(campaign_ticket['sample_tag'])
+
+    for i in GEN_samples:
+
+        driver.append('cmsDriver step3 --conditions '+str(driver_arguments['conditions'])+' --era '+str(driver_arguments['era'])+' --geometry '+str(driver_arguments['geometry'])+' --eventcontent RECOSIM,MINIAODSIM,DQM -s RAW2DIGI,L1Reco,RECO,RECOSIM,EI,PAT,VALIDATION:@standardValidation+@miniAODValidation,DQM:@standardDQM+@ExtraHLT+@miniAODDQM --python_name '+str(i)+'_RECO_MINIAOD_cfg.py --datatier GEN-SIM-RECO,MINIAODSIM,DQMIO --nThreads 8 --filein file:step2.root --fileout file:step3.root '+str(driver_forPU))
 
     return driver
 
@@ -95,7 +101,13 @@ def driver_NANO(campaign_ticket):
 
     driver_arguments=get_driver_arguments(campaign_ticket['sample_tag'])
 
-    driver='cmsDriver step4 --conditions '+str(driver_arguments['conditions'])+' --era '+str(driver_arguments['era'])+' --python_name step4_NANO_cfg.py --eventcontent NANOEDMAODSIM -s NANO --datatier NANOAODSIM --nThreads 8 --filein file:step3_inMINIAODSIM.root --fileout file:step4.root'
+    driver = []
+
+    GEN_samples = define_samples(campaign_ticket['sample_tag'])
+
+    for i in GEN_samples:
+
+        driver.append('cmsDriver step4 --conditions '+str(driver_arguments['conditions'])+' --era '+str(driver_arguments['era'])+' --python_name '+str(i)+'_NANO_cfg.py --eventcontent NANOEDMAODSIM -s NANO --datatier NANOAODSIM --nThreads 8 --filein file:step3_inMINIAODSIM.root --fileout file:step4.root')
 
     return driver
 
@@ -105,7 +117,10 @@ def driver_DQM(campaign_ticket):
 
     driver_arguments=get_driver_arguments(campaign_ticket['sample_tag'])
 
-    driver='cmsDriver HARVEST --filetype DQM --conditions '+str(driver_arguments['conditions'])+' --era '+str(driver_arguments['era'])+' --python_name Harvest_DQM_cfg.py -s HARVESTING:@rerecoCommon --filein file:RECO_RAW2DIGI_L1Reco_RECO_ALCA_EI_PAT_DQM_inDQM.root --fileout file:step4.root'
+    driver = []
+
+    for i in GEN_samples:
+        driver='cmsDriver HARVEST --filetype DQM --conditions '+str(driver_arguments['conditions'])+' --era '+str(driver_arguments['era'])+' --python_name '+str(i)+'_DQM_cfg.py -s HARVESTING:@rerecoCommon --filein file:RECO_RAW2DIGI_L1Reco_RECO_ALCA_EI_PAT_DQM_inDQM.root --fileout file:step4.root'
 
     return driver
 

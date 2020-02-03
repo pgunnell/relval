@@ -1,4 +1,5 @@
-from core.model.model_base import ModelBase
+#from core.model.model_base import ModelBase
+from model_base import ModelBase
 
 class ChainedRequest(ModelBase):
 
